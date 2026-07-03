@@ -1,3 +1,29 @@
+"""
+PW/Classplus/Appx Course Extractor Bot - Railway Edition
+"""
+import os
+import threading
+
+# Minimal web server for Railway health checks
+def run_web():
+    port = int(os.environ.get("PORT", 8080))
+    try:
+        from flask import Flask
+        app = Flask(__name__)
+        @app.route("/")
+        def health():
+            return "Bot running", 200
+        app.run(host="0.0.0.0", port=port)
+    except:
+        import http.server
+        import socketserver
+        handler = http.server.SimpleHTTPRequestHandler
+        with socketserver.TCPServer(("", port), handler) as httpd:
+            httpd.serve_forever()
+
+# Start web server in background thread
+threading.Thread(target=run_web, daemon=True).start()
+
 import requests
 import asyncio
 import aiohttp
